@@ -1,39 +1,56 @@
-# Task: CI/CD Pipeline for Flask App with Docker & GitHub Actions
+# CI/CD Pipeline for Flask App with GitHub Actions & Docker
 
-## 🎯 Objective
-Build a simple **Flask application**, containerize it using **Docker**, and set up a **CI/CD pipeline** with **GitHub Actions** to automatically test, build, and push images to Docker Hub.
+## Objective
 
----
+Implement a **CI/CD pipeline** to: - Build & test a Python Flask app -
+Containerize it with Docker - Automate build & push to Docker Hub using
+**GitHub Actions** - Deploy locally using the pushed Docker image
 
-## 🛠 Tools & Technologies
-- Python (Flask, Gunicorn, Pytest)
-- Docker & Docker Compose
-- GitHub Actions
-- AWS EC2 (for optional deployment)
+------------------------------------------------------------------------
 
----
+## Tools Used
 
-## 📦 Deliverables
-- ✅ Running Flask app (with `/` and `/healthz` endpoints)  
-- ✅ Dockerized application  
-- ✅ Automated CI/CD workflow (test, build, push to Docker Hub)  
-- ✅ Screenshots of build logs and container run  
+-   Python (Flask, Pytest)
+-   Docker & Docker Compose
+-   GitHub Actions (CI/CD)
+-   Docker Hub (container registry)
+-   AWS EC2 (optional for deployment)
 
----
+------------------------------------------------------------------------
 
-## 📌 Steps to Reproduce
+## Project Structure
 
-### 1️⃣ Create & Initialize Repository
-```bash
+    my-flask-cicd/
+    ├── app.py
+    ├── requirements.txt
+    ├── tests/
+    │   └── test_app.py
+    ├── Dockerfile
+    ├── docker-compose.yml
+    └── .github/
+        └── workflows/
+            └── ci.yml
+
+------------------------------------------------------------------------
+
+## Steps
+
+### 1. Create Repository & Clone
+
+``` bash
 git config --global init.defaultBranch main
 mkdir my-flask-cicd && cd my-flask-cicd
 git init
-git remote add origin https://github.com/sanjay1207/my-flask-cicd.git
+git remote add origin https://github.com/<your-username>/my-flask-cicd.git
+```
 
-2️⃣ Application Code
+------------------------------------------------------------------------
 
-app.py
+### 2. Application Code & Tests
 
+**app.py**
+
+``` python
 from flask import Flask, jsonify
 
 app = Flask(__name__)
@@ -48,17 +65,17 @@ def healthz():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000)
+```
 
+**requirements.txt**
 
-requirements.txt
+    flask==3.0.3
+    gunicorn==21.2.0
+    pytest==8.2.0
 
-flask==3.0.3
-gunicorn==21.2.0
-pytest==8.2.0
+**tests/test_app.py**
 
-
-tests/test_app.py
-
+``` python
 from app import app
 
 def test_healthz():
@@ -66,11 +83,15 @@ def test_healthz():
     res = client.get("/healthz")
     assert res.status_code == 200
     assert res.get_json()["status"] == "ok"
+```
 
-3️⃣ Containerization
+------------------------------------------------------------------------
 
-Dockerfile
+### 3. Containerization
 
+**Dockerfile**
+
+``` dockerfile
 FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
 WORKDIR /app
@@ -81,10 +102,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 EXPOSE 8000
 CMD ["gunicorn", "-w", "2", "-b", "0.0.0.0:8000", "app:app"]
+```
 
+**docker-compose.yml**
 
-docker-compose.yml
-
+``` yaml
 version: "3.8"
 services:
   web:
@@ -93,16 +115,28 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
+```
 
-4️⃣ Local Test
+**Local test**
+
+``` bash
 docker compose up --build -d
-curl http://localhost:8000/healthz   # {"status":"ok"}
+curl http://localhost:8000/healthz
 docker compose down
+```
 
-5️⃣ GitHub Actions CI/CD Workflow
+------------------------------------------------------------------------
 
-.github/workflows/ci.yml
+### 4. CI/CD with GitHub Actions
 
+#### 4.1 Add Docker Hub Secrets in GitHub
+
+-   `DOCKERHUB_USERNAME`
+-   `DOCKERHUB_TOKEN`
+
+#### 4.2 Workflow file: `.github/workflows/ci.yml`
+
+``` yaml
 name: CI-CD
 
 on:
@@ -135,13 +169,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Set up Buildx
         uses: docker/setup-buildx-action@v3
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
@@ -150,39 +187,57 @@ jobs:
           tags: |
             ${{ env.IMAGE_NAME }}:latest
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+```
 
-6️⃣ Commit & Push
+------------------------------------------------------------------------
+
+### 5. Commit & Push
+
+``` bash
 git add .
-git commit -m "CI/CD: Flask app with Docker and GH Actions"
+git commit -m "CI/CD: Flask app, Docker, GH Actions"
 git branch -M main
 git push -u origin main
+```
 
+------------------------------------------------------------------------
 
-GitHub Actions will:
+### 6. Run Image Locally (after CI/CD push)
 
-✅ Run tests
-
-✅ Build Docker image
-
-✅ Push to Docker Hub
-
-7️⃣ Run Image from Docker Hub
+``` bash
 docker pull <your-username>/my-flask-cicd:latest
 docker run -d -p 8000:8000 --name my-flask-app <your-username>/my-flask-cicd:latest
-curl http://localhost:8000/   # {"message":"Hello from CI/CD!"}
+curl http://localhost:8000/
+docker stop my-flask-app && docker rm my-flask-app
+```
 
-📸 Proof of Work
+------------------------------------------------------------------------
 
+## Proof of Work
 
+### GitHub Actions Workflow Run
 
-✅ Outcome
+![Workflow
+Actions](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/workflows-action.png)
 
-By the end of this task, you will have:
+### Docker Hub Repository
 
-A Flask app running in Docker
+![Docker Hub
+Repo](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/docker%20hub%20repo.png)
 
-Automated CI/CD pipeline on GitHub Actions
+### Running Container
 
-Image deployed to Docker Hub
+![Running
+Container](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/Running%20container.png)
 
-Proof screenshots of successful build & deployment
+### My Flask Image
+
+![Flask
+Image](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/my-flask%20image.png)
+
+### Local Deployment
+
+![Deploy
+Local](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/deploy%20local.png)
