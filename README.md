@@ -217,27 +217,23 @@ docker stop my-flask-app && docker rm my-flask-app
 
 ## Proof of Work
 
-### GitHub Actions Workflow Run
+### GitHub Actions Workflow
+![Workflow](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/workflows-action.png)
 
-![Workflow
-Actions](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/workflows-action.png)
+### Pytest Results
+![Tests](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/test.png)
+
+### Build and Push Logs
+![Build and Push](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/build-and-push.png)
 
 ### Docker Hub Repository
-
-![Docker Hub
-Repo](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/docker%20hub%20repo.png)
+![Docker Hub Repo](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/docker%20hub%20repo.png)
 
 ### Running Container
+![Running Container](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/Running%20container.png)
 
-![Running
-Container](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/Running%20container.png)
-
-### My Flask Image
-
-![Flask
-Image](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/my-flask%20image.png)
+### Flask Image in Docker
+![Flask Image](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/my-flask%20image.png)
 
 ### Local Deployment
-
-![Deploy
-Local](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/deploy%20local.png)
+![Local Deployment](https://github.com/sanjay720813/CI-CD-Pipeline-with-GitHub-Actions-Docker/blob/main/deploy%20local.png)
